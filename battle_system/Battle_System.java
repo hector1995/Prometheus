@@ -2,24 +2,61 @@ package battle_system;
 
 import java.util.Scanner;
 import java.util.Random;
-import character.Character_Orc;
-import enemy.Enemy_Quotes;
-import character.Character_Warrior;
-import enemy.Enemy_Class;
-import character.Weapons;
-import character.Character_Class;
+import enemy.*;
+import character.*;
+import shopping.Inventory;
 	
 public class Battle_System {
 		Enemy_Quotes enemyQuotes = new Enemy_Quotes();
+		Enemy_Giant giant = new Enemy_Giant();
+		Enemy_Goblin goblin = new Enemy_Goblin();
+		Enemy_Grunt grunt = new Enemy_Grunt();
+		Enemy_Halfling halfling = new Enemy_Halfling();
+		Enemy_Necromancer necromancer = new Enemy_Necromancer();
+		Enemy_Scorpion scorpion = new Enemy_Scorpion();
+		Enemy_Shapeshifter shapeshifter = new Enemy_Shapeshifter();
+		Enemy_Siren siren = new Enemy_Siren();
+		Enemy_Troll troll = new Enemy_Troll();
+		
 		Character_Class c = new Character_Class();
-		Enemy_Class enemy = new Enemy_Class();
 		Weapons  weapon = new Weapons();
 		Magic magic_attacks = new Magic();
+		Inventory inventory = new Inventory();
 		private String user,enemyName;
 		private int magic, enemy_health, magic_options, physical_options, damage, melee, character_health, boost;
-		//private int sword_attack_left=5,punch_attack_left=5;
 		
-		public void battleSystem(int choice){
+		/*
+		 * We should re-adjust the entire battle system 
+		 * 
+		 * */
+		
+		/** Enemy List
+		 * -------------
+		 * Giant
+		 * Goblin
+		 * Grunt
+		 * Halfing
+		 * Necromancer
+		 * Scorpion
+		 * Shapeshifter
+		 * Siren
+		 * Troll
+		 * -------------
+		 * */
+		
+		public void random_Enemy(){
+			String [] eName ={giant.getName(),goblin.getName(),grunt.getName(),halfling.getName(),necromancer.getName(),scorpion.getName(),shapeshifter.getName(),siren.getName(),troll.getName()};		
+			int [] selection = {giant.getHealth(),goblin.getHealth(),grunt.getHealth(),halfling.getHealth(),necromancer.getHealth(),scorpion.getHealth(),shapeshifter.getHealth(),siren.getHealth(),troll.getHealth()};
+			for(int counter = 0; counter < 1;counter++){
+				int rand = (int) (Math.random() * selection.length);
+				enemy_health = selection[rand];
+				enemyName = eName[rand];
+			}
+			
+		}
+		
+		
+		public void battleSystem(int choice) throws Exception{
 			@SuppressWarnings("resource")
 			Scanner input = new Scanner(System.in);
 			Random number = new Random();
@@ -27,15 +64,16 @@ public class Battle_System {
 			//char type;
 			double r = Math.random();
 			//boolean temp;
+			
 			if(choice == 1){
 				Character_Warrior character  = new Character_Warrior();
-				character_health = character.getHealthWarrior();
-				user = character.getUserWarrior();
+				character_health = character.getHealth();
+				user = character.getName();
 			}
 			else if(choice == 2){
 				Character_Orc character = new Character_Orc();
-				character_health = character.getOrcHealth();
-				user = character.getUserOrc();
+				character_health = character.getHealth();
+				user = character.getName();
 			}
 				
 			
@@ -43,14 +81,6 @@ public class Battle_System {
 			 * I assigned each method with health and a name. 
 			 * I then assign enemy to which ever enemy method is chosen in the array. 
 			 * enemyName is assigned to the same thing as enemy.*/
-			
-			String [] eName ={enemy.getGruntName(),enemy.getGoblinName(),enemy.getTrollsName(),enemy.getScorpionName(),enemy.getHalflingName()};		
-			int [] selection = {enemy.getGruntHealth(),enemy.getGoblinHealth(),enemy.getTrollsHealth(),enemy.getScorpionHealth(),enemy.getHalfling()};
-			for(int counter = 0; counter < 1;counter++){
-				int rand = (int) (Math.random() * selection.length);
-				enemy_health = selection[rand];
-				enemyName = eName[rand];
-			}
 			
 
 			/* ------------------------------------------
@@ -150,6 +180,91 @@ public class Battle_System {
 
 			END NEW BATTLE SYSTEM
 			------------------------------------------ */
+			
+			/*
+			 * New Battle System Menu
+			 *  
+			 * */
+			
+			/*
+			 * while(true) {perform battle system}
+			 * I believe that before a battle the user should choose 2 magic attacks and 2 physical attacks
+			 * to use before each battle. 
+			 * 
+			 * [Menu Example]
+			 * 
+			 * Display Character Stats(1) | Display Enemy Stats(2) | Choose Weapons/Abilities(3) | Start Battle(4)
+			 * 
+			 * [Selecting Character Stats]
+			 * eg.
+			 * Character: Warrior
+			 * Health: 100
+			 * Magic: 60
+			 * Physical Damage = 0;
+			 * Defense = 30
+			 * Armor = 50
+			 * Intelligence = 80
+			 * Speed = 20
+			 * Strength = 30
+			 * Resistance = 60
+			 * 
+			 * Press Enter To Return To Menu
+			 * 
+			 * [Selecting Enemy Stats]
+			 * 
+			 * Character: Halfling
+			 * Health: 100
+			 * Magic: 60
+			 * Physical Damage = 60
+			 * Defense = 30
+			 * Armor = 50
+			 * Armor = 40
+			 * Intelligence = 80
+			 * Speed = 20
+			 * Strength = 20
+			 * Resistance = 49
+			 * 
+			 * Press Enter To Return To Menu
+			 * 
+			 * [Choose Weapons/Abilities]
+			 * 
+			 * Select Physical Attacks(1) | Select Magic(2) | Confirm(3)
+			 * 
+			 * [Select Physical Attack] 
+			 * 1. Dagger
+			 * 2. Sword
+			 * 3. Knife
+			 * .
+			 * .
+			 * .
+			 * Type 'quit' to exit or 'remove' to remove weapons
+			 * eg. [Error Prompt] - User cannot have more than 2 physical attacks
+			 * eg. [Remove Weapons]
+			 * 1. Knife
+			 * 2. Dagger
+			 * 
+			 * Type 'quit' to exit
+			 * 
+			 * [Select Magic Abilities]
+			 * 1. Flameball
+			 * 2. Lightning Bolt
+			 * .
+			 * .
+			 * .
+			 * Type 'quit' to exit or 'remove' to change items
+			 * eg. [Error Prompt] - User cannot have more than 2 magic abilities
+			 * eg. [Remove Magic Abilities]
+			 * 1. Flameball
+			 * 2. Lightning Bolt
+			 * 
+			 * 
+			 * [Confirm] - Inventory Saved
+			 * 
+			 * [Start Battle]
+			 * Choose an Action: Melee(1) | Magic(2) 
+			 * */
+			
+			random_Enemy(); //chooses a random enemy to fight
 		
 			while(true){ //If your health is greater than 0, keep going through the loop.
 				System.out.println("\nChoose an Action:  Melee(1)/Magic(2): ");
@@ -310,6 +425,8 @@ public class Battle_System {
 						 ie.printStackTrace(); 
 					 }
 				 boost_Health();
+				 inventory.addToInventory("Health Potion", 1);
+				 //inventory.viewInventory();
 		}
 	}	//End of BattleSystem method.
 	
@@ -317,7 +434,7 @@ public class Battle_System {
 		
 		/*
 		 * Here is the method that controls how much boosted health we provide the user after each battle
-		 * 
+		 * Values are completely random. These values should be adjusted. 
 		 * */
 		private void boost_Health(){
 		 System.out.println("You have earned boost points towards your health.\n ");

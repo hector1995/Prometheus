@@ -1,13 +1,17 @@
 package game;
 import story.Story_Mode;
 import tournament.Tournament_Mode;
+import character.Character_Class;
+import character.Character_Select;
 import shopping.Shopping;
 import java.util.Scanner;
 
 public class Main_Class  {
-	public static void main(String [] args){
+	public static void main(String [] args) throws Exception{
 		Scanner input = new Scanner(System.in);
 		int response = 0;
+		
+		System.out.println("Welcome to Prometheus!");
 		
 		/*
 		 * There are 3 modes (Story Mode, Tournament and Shopping)
@@ -19,7 +23,11 @@ public class Main_Class  {
 		Tournament_Mode tournament = new Tournament_Mode();
 		Shopping shopping = new Shopping();
 		
-		/*Here I am asking you which character you would like to be. */
+		/* The character has been chosen and will remain the same throughout the game.
+		 * Reference to the character object may need to be passed to each mode in order to save progress from each mode.
+		 */
+		Character_Class player = Character_Select.character_Select();
+	
 		while (true){
 			System.out.println("Please select a mode: Story Mode(1) | Shopping(2) | Tournament(3) | Exit(4)");
 			response = input.nextInt();
@@ -27,13 +35,14 @@ public class Main_Class  {
 				story.tutorial();
 			}
 			else if(response == 2){
-			    shopping.store();
+			    shopping.store(player);
 		    }
 		    else if(response == 3){
 			    tournament.fight();
 		    }
 		    else if(response == 4){
 			    System.out.println("Thanks for playing");
+			    System.exit(1);
 			    break;
 		    }
 		    else{

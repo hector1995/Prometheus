@@ -2,7 +2,7 @@ package enemy;
 
 public class Enemy_Shapeshifter extends Enemy {
 	
-	//Enemy_Shapeshifter constructor 
+	//Enemy_Shapeshifter constructor
 	
 	public Enemy_Shapeshifter() {             //Assigning attributes to the Shapeshifter
 		super.name = "Shapeshifter";

@@ -2,7 +2,7 @@ package enemy;
 
 public class Enemy_Grunt extends Enemy {
 	
-	//Enemy_Grunt constructor 
+	//Enemy_Grunt constructor
 	
 	public Enemy_Grunt() {             //Assigning attributes to the Grunt
 		super.name = "Grunt";

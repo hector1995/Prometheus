@@ -15,31 +15,20 @@ public class Character_Elf extends Character_Class {
 	}
 		
 	// END NEW CONSTRUCTOR.
+	/** (non-Javadoc)
+	 * @see character.Character_Class#levelUp(int)
+	 */
 	@Override
 	public void levelUp(int exp1) {
-		exp = exp1;
-		while(true) {
-			if(getLevel() >= 10) {
-				break;
-			}
-			else{
-				if(exp >= MAX_EXP) {
-					exp -= MAX_EXP;
-				}
-				if(exp < 0) {
-					exp = 0;
-				}
-				level++;
-				MAX_EXP += 50;
+		int levelsGained = addExperience(exp1);
+		for(int levelIndex = 0; levelIndex < levelsGained; levelIndex++) {
 				health += 7;
-				health = getHealth();
 				armor += 6;
 				magic += 7;
 				speed += 12;
 				strength += 6;
 				resistance += 9;
 				System.out.println("You have leveled up!");
-			}
 		}
 	}
 	

@@ -29,7 +29,7 @@ public class Enemy {
 		Enemy_Shapeshifter shapeshifter = new Enemy_Shapeshifter();
 		Enemy_Siren siren = new Enemy_Siren();
 		Enemy_Troll troll = new Enemy_Troll();
-		int rand = 0;
+		int rand = 1;
 		
 		Object[] enemy_object = {giant,goblin,grunt,halfling,necromancer,scorpion,shapeshifter,siren,troll};
 		

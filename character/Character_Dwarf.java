@@ -19,29 +19,15 @@ public class Character_Dwarf extends Character_Class {
 	
         @Override
 	public void levelUp(int exp1) {
-		exp = exp1;
-		while(true) {
-			if(getLevel() >= 10) {
-				break;
-			}
-			else{
-				if(exp >= MAX_EXP) {
-					exp -= MAX_EXP;
-				}
-				if(exp < 0) {
-					exp = 0;
-				}
-				level++;
-				MAX_EXP += 50;
+		int levelsGained = addExperience(exp1);
+		for(int levelIndex = 0; levelIndex < levelsGained; levelIndex++) {
 				health += 11;
-				health = getHealth();
 				armor += 9;
 				magic += 5;
 				speed += 4;
 				strength += 11;
 				resistance += 10;
 				System.out.println("You have leveled up!");
-			}
 		}
 	}
 	

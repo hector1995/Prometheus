@@ -18,29 +18,15 @@ public class Character_Orc extends Character_Class {
 		// END NEW CONSTRUCTOR.
 	@Override
 	public void levelUp(int exp1) {
-		exp = exp1;
-		while(true) {
-			if(getLevel() >= 10) {
-				break;
-			}
-			else{
-				if(exp >= MAX_EXP) {
-					exp -= MAX_EXP;
-				}
-				if(exp < 0) {
-					exp = 0;
-				}
-				level++;
-				MAX_EXP += 50;
+		int levelsGained = addExperience(exp1);
+		for(int levelIndex = 0; levelIndex < levelsGained; levelIndex++) {
 				health += 19;
-				health = getHealth();
 				armor += 7;
 				magic += 7;
 				speed += 3;
 				strength += 11;
 				resistance += 9;
 				System.out.println("You have leveled up!");
-			}
 		}
 	}
 	

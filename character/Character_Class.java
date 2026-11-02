@@ -23,7 +23,18 @@ public class Character_Class  {
 		secondaryWeapon = "Punch";
 	}
 	public void levelUp(int exp1) {
-		this.exp = exp1;
+		addExperience(exp1);
+	}
+	protected int addExperience(int experienceEarned) {
+		exp += Math.max(0, experienceEarned);
+		int levelsGained = 0;
+		while(level < 10 && exp >= MAX_EXP) {
+			exp -= MAX_EXP;
+			level++;
+			MAX_EXP += 50;
+			levelsGained++;
+		}
+		return levelsGained;
 	}
 	public void setPrimaryWeapon(String weap){
 		this.primaryWeapon = weap;

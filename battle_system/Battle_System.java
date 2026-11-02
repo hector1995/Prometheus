@@ -17,8 +17,77 @@ public class Battle_System {
 		Select_Weapon weapons = new Select_Weapon();
 		private String user,enemyName;
 		private int magic, enemy_health, magic_options, physical_options, damage, melee, character_health;
+		private final Formulas formulas = new Formulas();
+
+		private void simulateBattle(Character_Class player, Enemy enemy) {
+			Random random = new Random();
+			int playerHealth = player.getHealth();
+			int enemyHealth = enemy.getHealth();
+			int round = 1;
+
+			System.out.println("A simulated battle begins: " + player.getName() + " vs. " + enemy.getName());
+			while(playerHealth > 0 && enemyHealth > 0) {
+				System.out.println("\nRound " + round++);
+				int playerAction = player.getMagic() > 0 ? random.nextInt(3) : random.nextInt(2);
+				String attackName;
+				int playerDamage;
+				if(playerAction == 0) {
+					attackName = player.getPrimaryWeapon();
+					playerDamage = formulas.getDamage(player.getPrimaryWeaponDamage(), enemy.getDefense());
+				}
+				else if(playerAction == 1) {
+					attackName = player.getSecondaryWeapon();
+					if(attackName.equalsIgnoreCase("Punch")) {
+						playerDamage = formulas.getPunchDamage(player.getStrength(), enemy.getArmor());
+					}
+					else {
+						playerDamage = formulas.getDamage(player.getSecondaryWeaponDamage(), enemy.getDefense());
+					}
+				}
+				else {
+					boolean flameball = random.nextBoolean();
+					attackName = flameball ? magic_attacks.get_Flameball_Name() : magic_attacks.get_Lightning_Bolt_Name();
+					int magicDamage = flameball ? magic_attacks.get_Flameball() : magic_attacks.get_Lightning_Bolt();
+					playerDamage = formulas.getDamage(magicDamage, enemy.getResistance());
+				}
+				playerDamage = Math.max(1, playerDamage);
+				enemyHealth -= playerDamage;
+				System.out.println(player.getName() + " uses " + attackName + " and deals " + playerDamage + " damage.");
+
+				if(enemyHealth > 0) {
+					boolean magicAttack = enemy.getMagic() > 0 && (enemy.getDamage() == 0 || random.nextBoolean());
+					String enemyAttack = magicAttack ? "magic" : "physical";
+					int attackDamage = magicAttack ? enemy.getMagic() : enemy.getDamage();
+					int defense = magicAttack ? player.getResistance() : player.getArmor();
+					int enemyDamage = Math.max(1, formulas.getDamage(attackDamage, defense));
+					playerHealth -= enemyDamage;
+					System.out.println(enemy.getName() + " uses a " + enemyAttack + " attack and deals " + enemyDamage + " damage.");
+				}
+
+				System.out.println("You - " + player.getName() + " HP - " + Math.max(0, playerHealth));
+				System.out.println("Enemy - " + enemy.getName() + " HP - " + Math.max(0, enemyHealth));
+			}
+
+			if(playerHealth <= 0) {
+				System.out.println("You are Dead");
+				enemyQuotes.winningQuote();
+				System.out.println("The Enemy Has Killed You.\n");
+			}
+			else {
+				System.out.println("The Enemy Has Been Defeated!\n");
+				enemyQuotes.deathQuote();
+				System.out.println("You Have " + playerHealth + " Health Points Remaining.\n");
+				System.out.println("You have gained experience.\n");
+				player.levelUp(20);
+			}
+		}
 		
 		public void battleSystem(Character_Class player, Enemy enemy) throws Exception{
+			simulateBattle(player, enemy);
+		}
+
+		@SuppressWarnings("unused")
+		private void legacyBattleSystem(Character_Class player, Enemy enemy) throws Exception{
 			@SuppressWarnings("resource")
 			Scanner input = new Scanner(System.in);
 			Random number = new Random();

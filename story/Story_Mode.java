@@ -20,29 +20,20 @@ public class Story_Mode {
 	 * */
 	
 	
-	/* [Random Enemy Generator]
-	 * The purpose of the random enemy generator is for testing/functionality purposes only.
-	 * It will not be used in the final version of the game.
-	 *
-	 * */
-	Enemy enemy = Enemy.randomEnemy(); //Generates a random enemy
-
 	private void handleInterruptedException(InterruptedException e) {
 		Thread.currentThread().interrupt();
 		System.out.println(" " + e.toString() + " Thread interrupted while sleeping. Continuing execution.");
 	}
 	
 	public void tutorial(Character_Class player) throws Exception{
-		System.out.println("A quick simulated battle is about to commence. ");
+		System.out.println("A battle will now commence!");
 		System.out.println("Please pay attention as to what's going on. ");
-		battle.battleSystem(player,enemy); //Starts the battle class.
+		battle.battleSystem(player, Enemy.randomEnemy()); //Starts the battle class.
 		tutorial2(player);
 		}
 	
 	/*the beginning of the 2nd tutorial */
 	private void tutorial2(Character_Class player){
-		System.out.println("As you can see, the battle system allows for you to choose your own attacks.\n");
-		System.out.println("This is how all of your battles will take place.\n");
 		try {
 		       Thread.sleep(2000);	//Sleep timer of 2 seconds.
 		   }
@@ -51,7 +42,7 @@ public class Story_Mode {
 		   }
 		System.out.println("Please Press Enter to Continue");
 		response = input.nextLine();
-		System.out.println("Are you ready to move forward? (Yes/No): ");
+		System.out.println("Are you ready to move forward? (Y/N): ");
 		response = input.nextLine();
 		if(response.equalsIgnoreCase("Yes") || response.equalsIgnoreCase("Y")){
 			tutorial3(player);
@@ -70,15 +61,15 @@ public class Story_Mode {
 		user = response2;
 		System.out.println("Hello! "+ user);
 		System.out.println("You're about to enter a world full of adventure.");
-		System.out.println("Shall I remind you again of your character choice? (Yes/No)");
+		System.out.println("Shall I remind you again of your character choice? (Y/N)");
 		response2 = input.nextLine();
-		if(response2.equalsIgnoreCase("Yes")){
+		if(response2.equalsIgnoreCase("Y")){
 			player.getSpeak();
 			System.out.print("I have: ");
 			player.getHealth();
 			endTutorial();
 			}
-		else if(response2.equalsIgnoreCase("No")){
+		else if(response2.equalsIgnoreCase("N")){
 			System.out.println("Good Deal then!");
 			System.out.println("This concludes this portion of the game. ");
 			endTutorial();
@@ -86,7 +77,8 @@ public class Story_Mode {
 	}
 	
 	public void endTutorial(){
-		System.out.println("Thanks for playing! ");
+		System.out.println("Lets enter the world of Prometheus!");
+		Introduction();
 	}
 	
 	public void endStory(){
@@ -127,12 +119,12 @@ public class Story_Mode {
 			catch(InterruptedException ie){
 				handleInterruptedException(ie);
 			}
-		System.out.println("Are you ready to begin? (Yes/No)");
+		System.out.println("Are you ready to begin? (Y/N)");
 		response2 = input.nextLine();
-		if(response2.equalsIgnoreCase("Yes")){
-		//	Chapter1();
+		if(response2.equalsIgnoreCase("Y")){
+			//chapter1();
 		}
-		else if (response2.equalsIgnoreCase("No")){
+		else if (response2.equalsIgnoreCase("N")){
 			endStory();
 		}
 	}
@@ -295,7 +287,7 @@ public class Story_Mode {
 		catch(InterruptedException ie) {
 			handleInterruptedException(ie);
 		}
-		battle.battleSystem(player, enemy);  //Battle Siren
+		battle.battleSystem(player, Enemy.randomEnemy());  //Battle Siren
 		try {
 			Thread.sleep(2000);
 		}
@@ -401,7 +393,7 @@ public class Story_Mode {
 		catch(InterruptedException ie) {
 			handleInterruptedException(ie);
 		}
-		battle.battleSystem(player, enemy); //Battle Giant
+		battle.battleSystem(player, Enemy.randomEnemy()); //Battle Giant
 		try {
 			Thread.sleep(2000);
 		}
@@ -455,7 +447,7 @@ public class Story_Mode {
 		catch(InterruptedException ie) {
 			handleInterruptedException(ie);
 		}
-		battle.battleSystem(player, enemy); //Battle Grunt
+		battle.battleSystem(player, Enemy.randomEnemy()); //Battle Grunt
 		try {
 			Thread.sleep(2000);
 		}

@@ -1,17 +1,15 @@
 package battle_system;
-import character.Character_Class;
+
 public class Magic {
-	
-	Character_Class magic = new Character_Class();
-	
+
+	// Spell costs are constants: the number is the magic points a cast consumes.
+
 	public int get_Flameball(){
-		magic.setMagic(30);
-		return magic.getMagic();
+		return 30;
 	}
 
 	public int get_Lightning_Bolt(){
-		magic.setMagic(20);
-		return magic.getMagic();
+		return 20;
 	}
 	
 	public String get_Lightning_Bolt_Name(){

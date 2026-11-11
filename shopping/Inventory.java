@@ -12,7 +12,7 @@ public class Inventory{
      */
     public Inventory(){
         backpackSize = 25;
-        backpack.add("Rusty Axe Weapon");
+        backpack.add("Rusty Axe");
         backpack.add("1");
         backpack.add("Health Potion");
         backpack.add("3");
@@ -85,6 +85,10 @@ public class Inventory{
         }
 		return 0;
     }
+
+	public boolean hasItem(String itemName) {
+		return backpack.contains(itemName);
+	}
     /**
      * Select weapon from inventory
      * Only works with 1 item in in backpack
@@ -93,15 +97,15 @@ public class Inventory{
      */
     public String selectWeapon(int index) throws Exception {
 		int formula = (2*(index)-2);//Formula I figured out to account for the stacking
+		if(formula < 0 || formula >= backpack.size()) {
+			throw new Exception("No item at position " + index);
+		}
 		String weapName = backpack.get(formula);
-		if(weapName.endsWith("Weapon")) {
+		if(weapons.Weapon.damageFor(weapName) != null) {
 			System.out.println(weapName+" equipped");
 			return weapName;
 		}
-		else {
-			System.out.println(weapName+" is not a weapon.");
-		}
-		return "Rusty Axe Weapon";
+		throw new Exception(weapName+" is not a weapon.");
     }
     /**
      * Method to add items to Inventory
@@ -135,14 +139,16 @@ public class Inventory{
     public void removeFromInventory(String itemToRemove){
         for(int i=0; i<backpack.size(); i++) {
             if(backpack.get(i).equalsIgnoreCase(itemToRemove)) {
-            	if(Integer.parseInt(backpack.get(i+1)) > 1) {
-            		backpack.remove(i+1);
-            	}
-            	else {
-            		backpack.remove(i);
-            		backpack.remove(i+1);
-            	}
+	            	int quantity = Integer.parseInt(backpack.get(i+1));
+	            	if(quantity > 1) {
+	            		backpack.set(i+1, Integer.toString(quantity - 1));
+	            	}
+	            	else {
+	            		backpack.remove(i+1);
+	            		backpack.remove(i);
+	            	}
             	System.out.println(itemToRemove+" was successfully removed from backpack!");
+	            	return;
             }
         }
     }

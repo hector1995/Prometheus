@@ -4,7 +4,12 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Tournament_Mode {
-	Scanner input = new Scanner(System.in);
+	private final Scanner input;
+
+	public Tournament_Mode(Scanner input) {
+		this.input = input;
+	}
+
 	public void Gamble(Character_Class player)throws Exception{
 		System.out.println("Welcome to Wager Mode");
 		int stage = 1;
@@ -27,27 +32,13 @@ public class Tournament_Mode {
 		System.out.println("You have $" + player.getMoney());
 		Pause();
 		System.out.println("How much money do you want to bet?");
-		withdraw = input.nextInt();
-		while(true){
-		if(player.getMoney() <  withdraw){
-			System.out.println("Not enough money! Pick a different value.");
-			Pause();
-			withdraw = input.nextInt();
-		}
-			else
-			break;
-		}
+		withdraw = readBet(player);
 		player.setMoney(player.getMoney() - withdraw);
 		System.out.println("You now wagered: $" + withdraw);
 		System.out.println("You now have $" + player.getMoney());
 		Pause();
-			int output = 0;
-			while(output > 2 || output < 1){
-				System.out.println("Pick: head (1)| tails (2)");
-				Pause();
-				output = input.nextInt();
-			}
-						
+			int output = readHeadOrTails();
+
 		choice = rndm.nextInt(100);
 		
 		System.out.println("Coin flip......");
@@ -67,48 +58,93 @@ public class Tournament_Mode {
 			}
 		
 		System.out.println("Do you want to continue? (y/n)");
-		char c = input.next(".").charAt(0);
+		char c = readYesNo();
 		if(c == 'n'){
 			break;
 		}
 		if (c == 'y')
 		{
-			if(stage < 5)
+			cycle++;
+			int times = Levelup(stage, cycle);
+			if (stage < 5)
 			{
 				System.out.println("You are currently in stage: " + stage + "\n");
 			}
-			int times;
-			times = Levelup(stage, cycle);
-			cycle++;
-//			System.out.println("Cycle: " + cycle);
-//			System.out.println("Times: " + times);
 			if(times <= 0){
-				stage++;
+				stage = Math.min(stage + 1, 5);
 				System.out.println("Entering stage: " + stage + "\n");
 				cycle = 0;
 				}
-			if(stage != 5){
-			if(times > 0)
+			if(stage < 5 && times > 0)
 			{
 				System.out.println("You can stay on this stage for " + times + " more turn(s) before you level up");
 				System.out.println("Would you like to go up a stage? (y/n)");
-				c = input.next(".").charAt(0);
+				c = readYesNo();
 				if (c == 'y')
 				{
-					stage++;
+					stage = Math.min(stage + 1, 5);
 					System.out.println("Entering stage: " + stage + "\n");
 					cycle = 0;
 				}
-				if(times < 0)
-				{
-					stage++;
-					System.out.println("Entering stage: " + stage + "\n");
-					cycle = 0;
-				}
-			}}
+			}
 		}
 	}
 		System.out.println("Now leaving Wager Mode\n");
+	}
+
+	/**
+	 * Read a wager amount, rejecting non-numeric, zero, negative and
+	 * over-balance entries.
+	 */
+	private int readBet(Character_Class player) {
+		while(true) {
+			try {
+				int withdraw = Integer.parseInt(input.nextLine().trim());
+				if(withdraw <= 0) {
+					System.out.println("Bet must be a positive amount. Pick again.");
+					continue;
+				}
+				if(player.getMoney() < withdraw) {
+					System.out.println("Not enough money! Pick a different value.");
+					continue;
+				}
+				return withdraw;
+			} catch(NumberFormatException e) {
+				System.out.println("Please enter a valid number.");
+			}
+		}
+	}
+
+	/**
+	 * Read the head/tails choice (1 or 2) with validation.
+	 */
+	private int readHeadOrTails() {
+		while(true) {
+			System.out.println("Pick: head (1)| tails (2)");
+			Pause();
+			try {
+				int output = Integer.parseInt(input.nextLine().trim());
+				if(output == 1 || output == 2) {
+					return output;
+				}
+				System.out.println("Please enter 1 or 2.");
+			} catch(NumberFormatException e) {
+				System.out.println("Please enter a valid number.");
+			}
+		}
+	}
+
+	/**
+	 * Read a y/n answer, returning lowercase 'y' or 'n'.
+	 */
+	private char readYesNo() {
+		while(true) {
+			String token = input.nextLine().trim().toLowerCase();
+			if(token.equals("y") || token.equals("n")) {
+				return token.charAt(0);
+			}
+			System.out.println("Please enter y or n.");
+		}
 	}
 	/**
 	 * Method to enter player into tournament

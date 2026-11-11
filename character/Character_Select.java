@@ -1,15 +1,13 @@
 package character;
 
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Character_Select {
-	static int response = 0;
-	static Scanner input = new Scanner(System.in);
 
-	public static Character_Class character_Select(){
+	public static Character_Class character_Select(Scanner input){
 		while (true)
 		{
+			int response;
 			try
 			{
 				System.out.println("""
@@ -20,95 +18,57 @@ public class Character_Select {
 					\t4.) Elf
 					\t5.) Dwarf
 								""");
-				response = input.nextInt();
-				if (response >=1 && response <=5)
-				{
-					break;
-				}
-				else
-				{
-					System.out.println("Please enter a number between 1-5");
-				}
-				}catch(InputMismatchException e)
-				{
-					System.out.println("Please enter a valid response");
-					}input.nextLine();
-			}
-			switch (response)
+				response = Integer.parseInt(input.nextLine().trim());
+			}catch(NumberFormatException e)
 			{
-			case 1 -> {
-                            Character_Warrior character = new Character_Warrior();
-                            displayCharacter(character);
-                            if(confirmCharacter())
-                            {
-                                return character;
-                            }
-                }
-			case 2 -> {
-                            Character_Orc orc_character = new Character_Orc();
-                            displayCharacter(orc_character);
-                            if(confirmCharacter()){
-                                return orc_character;
-                            }
-                }
-			case 3 -> {
-                            Character_Wizard wizard_character = new Character_Wizard();
-                            displayCharacter(wizard_character);
-                            if(confirmCharacter())
-                            {
-                                return wizard_character;
-                            }
-                }
-			case 4 -> {
-                            Character_Elf elf_character = new Character_Elf();
-                            displayCharacter(elf_character);
-                            if(confirmCharacter())
-                            {
-                                return elf_character;
-                            }
-                }
-			case 5 -> {
-                            Character_Dwarf dwarf_character = new Character_Dwarf();
-                            displayCharacter(dwarf_character);
-                            if(confirmCharacter())
-                            {
-                                return dwarf_character;
-                            }
-                }
-			default -> System.out.println("Invalid Response. Please enter a number from the list above.");
-		}
-			return null;
+				System.out.println("Please enter a valid response");
+				continue;
 			}
-	
-		private static boolean confirmCharacter()
+
+			Character_Class character = switch (response)
+			{
+				case 1 -> new Character_Warrior();
+				case 2 -> new Character_Orc();
+				case 3 -> new Character_Wizard();
+				case 4 -> new Character_Elf();
+				case 5 -> new Character_Dwarf();
+				default -> null;
+			};
+
+			if (character == null)
+			{
+				System.out.println("Please enter a number between 1-5");
+				continue;
+			}
+
+			displayCharacter(character);
+
+			if (confirmCharacter(input))
+			{
+				return character;
+			}
+			// User answered N: loop back and re-prompt for a new character.
+		}
+	}
+
+	private static boolean confirmCharacter(Scanner input)
+	{
+		while (true)
 		{
-			boolean character = false;
-			System.out.println("Would you like to continue with the character?Y/N");
-			String confirm_flag = input.next();
-			
-			if(confirm_flag.equalsIgnoreCase("Y"))
+			System.out.println("Would you like to continue with the character? Y/N");
+			String confirm_flag = input.nextLine().trim();
+
+			if (confirm_flag.equalsIgnoreCase("Y"))
 			{
-				character= true;
+				return true;
 			}
-			else if(confirm_flag.equalsIgnoreCase("N"))
+			else if (confirm_flag.equalsIgnoreCase("N"))
 			{
-				character_Select();
+				return false;
 			}
-			else
-			{
-				System.out.println("Please enter a valid input (Y/N):");
-				confirm_flag = input.next();
-				if(confirm_flag.equalsIgnoreCase("Y"))
-				{
-					character= true;
-				}
-				else if(confirm_flag.equalsIgnoreCase("N"))
-				{
-					character_Select();
-				}
-			}
-			return character;
+			System.out.println("Please enter a valid input (Y/N):\n");
 		}
+	}
 
 		public static void displayCharacter (Character_Class player)
 		{

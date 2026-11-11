@@ -22,7 +22,7 @@ public class Character_Elf extends Character_Class {
 	public void levelUp(int exp1) {
 		int levelsGained = addExperience(exp1);
 		for(int levelIndex = 0; levelIndex < levelsGained; levelIndex++) {
-				health += 7;
+				increaseMaxHealth(7);
 				armor += 6;
 				magic += 7;
 				speed += 12;

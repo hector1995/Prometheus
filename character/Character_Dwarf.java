@@ -21,7 +21,7 @@ public class Character_Dwarf extends Character_Class {
 	public void levelUp(int exp1) {
 		int levelsGained = addExperience(exp1);
 		for(int levelIndex = 0; levelIndex < levelsGained; levelIndex++) {
-				health += 11;
+				increaseMaxHealth(11);
 				armor += 9;
 				magic += 5;
 				speed += 4;

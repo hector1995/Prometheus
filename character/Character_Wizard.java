@@ -19,7 +19,7 @@ public class Character_Wizard extends Character_Class {
 		public void levelUp(int exp1) {
 			int levelsGained = addExperience(exp1);
 			for(int levelIndex = 0; levelIndex < levelsGained; levelIndex++) {
-					health += 7;
+					increaseMaxHealth(7);
 					armor += 4;
 					magic += 12;
 					speed += 7;

@@ -1,13 +1,14 @@
 package character;
 import shopping.Inventory;
 public class Character_Class  {
-	protected int level,exp,health,magic,armor,primary_weapon_damage, secondary_weapon_damage;
+	protected int level,exp,health,maxHealth,magic,armor,primary_weapon_damage, secondary_weapon_damage;
 	protected int speed,strength,resistance,money,tournyRounds,MAX_EXP = 100;
 	protected String name,speak,primaryWeapon,secondaryWeapon;
 	public Inventory backpack;
 	public Character_Class(){   //These are the defaults stats, just in case I didn't set one up
 		level = 1; //Character begins at level 1 by default
 		health = 100;        // in the main_Class.
+		maxHealth = 100;
 		magic = 0;
 		armor = 0;
 		speed = 0;
@@ -39,6 +40,21 @@ public class Character_Class  {
 	public void setPrimaryWeapon(String weap){
 		this.primaryWeapon = weap;
 	}
+	/**
+	 * Equip a weapon as the primary weapon, updating its damage from the
+	 * central weapon registry. Falls back to the Rusty Axe if the name is
+	 * not a registered weapon.
+	 * @return true if the weapon was equipped, false if the name is unknown
+	 */
+	public boolean equipWeapon(String weap){
+		Integer dmg = weapons.Weapon.damageFor(weap);
+		if(dmg == null) {
+			return false;
+		}
+		this.primaryWeapon = weap;
+		this.primary_weapon_damage = dmg;
+		return true;
+	}
 	public void setPrimaryWeaponDamage(int dmg) {
 		this.primary_weapon_damage = dmg;
 	}
@@ -62,6 +78,10 @@ public class Character_Class  {
 	}
 	public void setHealth(int h){
 		this.health = h;
+	}
+	protected void increaseMaxHealth(int amount) {
+		maxHealth += amount;
+		health += amount;
 	}
 	public void setMagic(int m) {
 		this.magic = m;
@@ -104,6 +124,9 @@ public class Character_Class  {
 	}
 	public int getHealth(){
 		return health;
+	}
+	public int getMaxHealth(){
+		return maxHealth;
 	}
 	public int getArmor(){
 		return armor;

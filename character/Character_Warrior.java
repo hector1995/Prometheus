@@ -20,7 +20,7 @@ public class Character_Warrior extends Character_Class {
 		public void levelUp(int exp1) {
 			int levelsGained = addExperience(exp1);
 			for(int levelIndex = 0; levelIndex < levelsGained; levelIndex++) {
-					health += 15;
+					increaseMaxHealth(15);
 					armor += 10;
 					magic += 1;
 					speed += 3;

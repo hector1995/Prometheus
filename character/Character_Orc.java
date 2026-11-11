@@ -20,7 +20,7 @@ public class Character_Orc extends Character_Class {
 	public void levelUp(int exp1) {
 		int levelsGained = addExperience(exp1);
 		for(int levelIndex = 0; levelIndex < levelsGained; levelIndex++) {
-				health += 19;
+				increaseMaxHealth(19);
 				armor += 7;
 				magic += 7;
 				speed += 3;

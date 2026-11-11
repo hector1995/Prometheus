@@ -1,13 +1,12 @@
 package battle_system;
 
-import java.util.Scanner;
-import weapons.Select_Weapon;
-
+import character.*;
+import enemy.*;
 import java.util.InputMismatchException;
 import java.util.Random;
-import enemy.*;
-import character.*;
+import java.util.Scanner;
 import shopping.Inventory;
+import weapons.Select_Weapon;
 	
 public class Battle_System {
 		Enemy_Quotes enemyQuotes = new Enemy_Quotes();	
@@ -19,18 +18,49 @@ public class Battle_System {
 		private int magic, enemy_health, magic_options, physical_options, damage, melee, character_health;
 		private final Formulas formulas = new Formulas();
 
-		private void simulateBattle(Character_Class player, Enemy enemy) {
+		// Gold charged when a character is revived after being knocked out.
+		private static final int REVIVE_COST = 100;
+
+		/**
+		 * @param player
+		 * @param enemy
+		 * @return
+		 * @throws Exception
+		 */
+		private boolean simulateBattle(Character_Class player, Enemy enemy) throws Exception {
 			Random random = new Random();
 			int playerHealth = player.getHealth();
+			// Magic acts as a per-battle resource pool, refilled to the character's
+			// maximum once the battle ends.
+			final int maxMagic = player.getMagic();
+			int playerMagic = maxMagic;
 			int enemyHealth = enemy.getHealth();
 			int round = 1;
 
 			System.out.println("A simulated battle begins: " + player.getName() + " vs. " + enemy.getName());
 			while(playerHealth > 0 && enemyHealth > 0) {
 				System.out.println("\nRound " + round++);
-				int playerAction = player.getMagic() > 0 ? random.nextInt(3) : random.nextInt(2);
+				if(playerHealth <= 30 && playerHealth < player.getMaxHealth() && player.backpack.hasItem("Health Potion")) {
+					int healing = player.backpack.useItem("Health Potion");
+					playerHealth = Math.min(player.getMaxHealth(), playerHealth + healing);
+					System.out.println(player.getName() + " uses a Health Potion and restores " + healing + " HP.");
+				}
+				// Automatically restore magic when it is too low to cast and a Mana Potion is on hand.
+				if(playerMagic < magic_attacks.get_Lightning_Bolt() && player.backpack.hasItem("Mana Potion")) {
+					int restored = player.backpack.useItem("Mana Potion");
+					playerMagic += restored;
+					System.out.println(player.getName() + " uses a Mana Potion and restores " + restored + " magic.");
+				}
+
+				// Only consider spells the character can actually afford with remaining magic.
+				boolean canFlameball = playerMagic >= magic_attacks.get_Flameball();
+				boolean canLightning = playerMagic >= magic_attacks.get_Lightning_Bolt();
+
 				String attackName;
 				int playerDamage;
+				int actionCap = (canFlameball || canLightning) ? 3 : 2;
+				int playerAction = random.nextInt(actionCap);
+
 				if(playerAction == 0) {
 					attackName = player.getPrimaryWeapon();
 					playerDamage = formulas.getDamage(player.getPrimaryWeaponDamage(), enemy.getDefense());
@@ -45,9 +75,18 @@ public class Battle_System {
 					}
 				}
 				else {
-					boolean flameball = random.nextBoolean();
+					// Pick randomly among the spells that are affordable.
+					boolean flameball;
+					if(canFlameball && canLightning) {
+						flameball = random.nextBoolean();
+					}
+					else {
+						flameball = canFlameball;
+					}
 					attackName = flameball ? magic_attacks.get_Flameball_Name() : magic_attacks.get_Lightning_Bolt_Name();
 					int magicDamage = flameball ? magic_attacks.get_Flameball() : magic_attacks.get_Lightning_Bolt();
+					playerMagic -= magicDamage; //Spells now consume magic points.
+					System.out.println("(" + attackName + " costs " + magicDamage + " magic, " + Math.max(0, playerMagic) + " left)");
 					playerDamage = formulas.getDamage(magicDamage, enemy.getResistance());
 				}
 				playerDamage = Math.max(1, playerDamage);
@@ -64,26 +103,47 @@ public class Battle_System {
 					System.out.println(enemy.getName() + " uses a " + enemyAttack + " attack and deals " + enemyDamage + " damage.");
 				}
 
-				System.out.println("You - " + player.getName() + " HP - " + Math.max(0, playerHealth));
+				System.out.println("You - " + player.getName() + " HP - " + Math.max(0, playerHealth)
+						+ " | Magic - " + Math.max(0, playerMagic));
 				System.out.println("Enemy - " + enemy.getName() + " HP - " + Math.max(0, enemyHealth));
 			}
+
+			// Magic is a per-battle pool: refill it so the next battle starts fresh.
+			player.setMagic(maxMagic);
 
 			if(playerHealth <= 0) {
 				System.out.println("You are Dead");
 				enemyQuotes.winningQuote();
 				System.out.println("The Enemy Has Killed You.\n");
+				revive(player);
+				return false;
 			}
 			else {
+				player.setHealth(playerHealth);
 				System.out.println("The Enemy Has Been Defeated!\n");
 				enemyQuotes.deathQuote();
 				System.out.println("You Have " + playerHealth + " Health Points Remaining.\n");
 				System.out.println("You have gained experience.\n");
 				player.levelUp(20);
+				return true;
 			}
 		}
+
+		/**
+		 * Restore a knocked-out character so the session can continue.
+		 * Charges a gold penalty (capped at the gold the character actually has)
+		 * and refills health to maximum.
+		 */
+		private void revive(Character_Class player) {
+			int cost = Math.min(REVIVE_COST, Math.max(0, player.getMoney()));
+			player.setMoney(player.getMoney() - cost);
+			player.setHealth(player.getMaxHealth());
+			System.out.println("A passing healer revives you for $" + cost + ".");
+			System.out.println("You are revived with " + player.getHealth() + " HP and $" + player.getMoney() + " remaining.\n");
+		}
 		
-		public void battleSystem(Character_Class player, Enemy enemy) throws Exception{
-			simulateBattle(player, enemy);
+		public boolean battleSystem(Character_Class player, Enemy enemy) throws Exception{
+			return simulateBattle(player, enemy);
 		}
 
 		@SuppressWarnings("unused")
@@ -410,7 +470,7 @@ public class Battle_System {
 							else if(magic_options == 1 && r <= .70 || magic_options == 2 && r <= .70){	//Magic Attack
 								enemy_health-=magic;
 								if(magic > 25){
-									System.out.println("Critical Damage!"); 
+									System.out.println("Critical Damage!\n"); 
 								}
 								System.out.println("*You Have Dealt "+magic+" Hit Point Damage To Your Enemy.*\n ");
 								 try {

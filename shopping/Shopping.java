@@ -1,16 +1,20 @@
 package shopping;
-//import character.Items;	//uncomment when Items class is made
 import character.Character_Class;
 import java.util.Scanner;
+import weapons.Weapon;
 
 public class Shopping
 {
-	private final shopWeaponItem[] weaponsStock = {new shopWeaponItem("Sword Weapon", 350, "weapon", 1), new shopWeaponItem("Knife Weapon", 50, "weapon", 2), new shopWeaponItem("Dagger Weapon", 125, "weapon", 3), new shopWeaponItem("Mace Weapon", 350, "weapon", 5)};
-	private final shopWeaponItem[] itemsStock = {new shopWeaponItem("Health Potion", 150, "item", 1), new shopWeaponItem("Mana Potion", 150, "item", 2), new shopWeaponItem("Antidote", 100, "item", 3), new shopWeaponItem("Energy Restore", 225, "item", 4), new shopWeaponItem("Burn Heal", 250, "item", 5)};
+	private final Weapon[] weaponsStock = {new Weapon("Sword", 350, 1, Weapon.damageFor("Sword")), new Weapon("Knife", 50, 2, Weapon.damageFor("Knife")), new Weapon("Dagger", 125, 3, Weapon.damageFor("Dagger")), new Weapon("Mace", 350, 5, Weapon.damageFor("Mace"))};
+	private final Weapon[] itemsStock = {new Weapon("Health Potion", 150, 1, 0), new Weapon("Mana Potion", 250, 2, 0), new Weapon("Antidote", 100, 3, 0), new Weapon("Energy Restore", 225, 4, 0), new Weapon("Burn Heal", 250, 5, 0)};
 	
-	static Scanner input = new Scanner(System.in);
+	private final Scanner input;
 	private String response = null;
 	private boolean currentlyHere, browsing = false; //using it for while loop so I don't have to use recursion
+
+	public Shopping(Scanner input) {
+		this.input = input;
+	}
 	
 	public void store(Character_Class person) throws Exception
 	{
@@ -31,7 +35,7 @@ public class Shopping
 		currentlyHere = true;
 		while (currentlyHere == true)
 		{
-			System.out.println("Weapons (1) / Consumables (2) / View Backpack(3) /Exit Store (4)");
+			System.out.println("Weapons (1) / Consumables (2) / View Backpack(3) / Equip Weapon(4) /Exit Store (5)");
 			response = input.nextLine();
 			
 			switch (response)
@@ -39,9 +43,34 @@ public class Shopping
 				case "1" -> browseWeapons(person);
 				case "2" -> browseItems(person);
 				case "3" -> person.backpack.viewInventory();
-				case "4" -> exitStore();
+				case "4" -> equipFromBackpack(person);
+				case "5" -> exitStore();
 				default -> System.out.println("Invalid input.");
 			}
+		}
+	}
+	
+	/*
+	 * Equip a weapon from the backpack as the primary weapon.
+	 */
+	private void equipFromBackpack(Character_Class person)
+	{
+		person.backpack.viewInventory();
+		System.out.println("Enter the number of the weapon to equip:");
+		try {
+			int choice = Integer.parseInt(input.nextLine().trim());
+			String weapName = person.backpack.selectWeapon(choice);
+			if(person.equipWeapon(weapName)) {
+				System.out.println(person.getName() + " now wields " + weapName
+						+ " (damage " + person.getPrimaryWeaponDamage() + ").");
+			}
+			else {
+				System.out.println(weapName + " cannot be equipped.");
+			}
+		} catch(NumberFormatException e) {
+			System.out.println("Please enter a valid number.");
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
 		}
 	}
 	
@@ -69,11 +98,10 @@ public class Shopping
 			response = input.nextLine();
 			switch (response)
 			{
-				case "0" -> buyItem(person, weaponsStock[0].getName(), weaponsStock[0].getPrice(), weaponsStock[0].getRequiredLevel()); //Sword
-				case "1" -> buyItem(person, weaponsStock[1].getName(), weaponsStock[1].getPrice(), weaponsStock[1].getRequiredLevel()); //Knife
-				case "2" -> buyItem(person, weaponsStock[2].getName(), weaponsStock[2].getPrice(), weaponsStock[2].getRequiredLevel()); //Dagger
-				case "3" -> buyItem(person, weaponsStock[3].getName(), weaponsStock[3].getPrice(), weaponsStock[3].getRequiredLevel()); //Mace
-				case "4" -> buyItem(person, weaponsStock[4].getName(), weaponsStock[4].getPrice(), weaponsStock[4].getRequiredLevel()); //Broken Stick
+				case "0" -> buyItem(person, weaponsStock[0]); //Sword
+				case "1" -> buyItem(person, weaponsStock[1]); //Knife
+				case "2" -> buyItem(person, weaponsStock[2]); //Dagger
+				case "3" -> buyItem(person, weaponsStock[3]); //Mace
 				case "9", "exit", "back" -> browsing = false;
                                 default -> System.out.println("Invalid input.");
 			}
@@ -89,11 +117,11 @@ public class Shopping
 			displayStock(itemsStock);
 			response = input.nextLine();
 			switch (response){
-				case "0" -> buyItem(person, itemsStock[0].getName(), itemsStock[0].getPrice(), itemsStock[0].getRequiredLevel()); //"Health Potion"
-				case "1" -> buyItem(person, itemsStock[1].getName(), itemsStock[1].getPrice(), itemsStock[1].getRequiredLevel()); //"Mana Potion"
-				case "2" -> buyItem(person, itemsStock[2].getName(), itemsStock[2].getPrice(), itemsStock[2].getRequiredLevel()); //"Antidote"
-				case "3" -> buyItem(person, itemsStock[3].getName(), itemsStock[3].getPrice(), itemsStock[3].getRequiredLevel()); //"Energy Restore"
-				case "4" -> buyItem(person, itemsStock[4].getName(), itemsStock[4].getPrice(), itemsStock[4].getRequiredLevel()); //"Burn Repel"
+				case "0" -> buyItem(person, itemsStock[0]); //Health Potion
+				case "1" -> buyItem(person, itemsStock[1]); //Mana Potion
+				case "2" -> buyItem(person, itemsStock[2]); //Antidote
+				case "3" -> buyItem(person, itemsStock[3]); //Energy Restore
+				case "4" -> buyItem(person, itemsStock[4]); //Burn Heal
 				case "9", "exit", "back" -> browsing = false;
                                 default -> System.out.println("Invalid input.");
 			}
@@ -104,10 +132,10 @@ public class Shopping
 	 * Display Stock
 	 */
 	
-	private void displayStock(shopWeaponItem[] stock)
+	private void displayStock(Weapon[] stock)
 	{
 		System.out.println();
-		for(int index = 0; index < weaponsStock.length; index++){
+		for(int index = 0; index < stock.length; index++){
 			System.out.println("("+ index +") "+  stock[index].getPrice() + " - "+ stock[index].getName() + " - " + "You must be Level " + stock[index].getRequiredLevel() + " to purchase.");
 		}
 		System.out.println("(9) Back to Store Menu");
@@ -116,16 +144,16 @@ public class Shopping
 	/*
 	 * Buy Item
 	 */
-	public void buyItem(Character_Class person, String item, int price, int requiredLevel) throws Exception
-	{ //change String item to shopstock or whatever when I figure out how to implement.
-		if(person.getMoney() >= price && person.getLevel() >= requiredLevel)
+	public void buyItem(Character_Class person, Weapon item) throws Exception
+	{
+		if(person.getMoney() >= item.getPrice() && person.getLevel() >= item.getRequiredLevel())
 		{
-			person.setMoney(person.getMoney() - price);
-			person.backpack.addToInventory(item, 1);//add item to inventory
-			System.out.println("Here's your " + item);
+			person.setMoney(person.getMoney() - item.getPrice());
+			person.backpack.addToInventory(item.getName(), 1);//add item to inventory
+			System.out.println("Here's your " + item.getName());
 			System.out.println("You have $" + person.getMoney() + " left. \n Would you like anything else? \n");
 		}
-		else if(person.getMoney() >= price && person.getLevel() < requiredLevel)
+		else if(person.getMoney() >= item.getPrice() && person.getLevel() < item.getRequiredLevel())
 		{
 			System.out.println("You don't meet the level requirements for this purchase");
 		}
@@ -158,47 +186,4 @@ public class Shopping
 	{
 		
 	}
-	
-	/* JUNK CLASS FOR JUNK OBJECTS FOR JUNK INFORMATION  <-- DELETE AS SOON REAL WEAPONS AND ITEMS ARE MADE
-	 */
-	class shopWeaponItem {
-		private final String name; //name
-		private final int price;   //gold price
-		private final String type; //item or weapon
-		private final int requiredLevel; //required level to purchase weapon
-		/*
-		shopWeaponItem()
-		{
-		
-		}*/
-
-		//Constructor - 4 accepted arguments
-		shopWeaponItem(String name, int price, String type, int requiredLevel)
-		{
-			this.name = name;
-			this.price = price;
-			this.type = type;
-			this.requiredLevel = requiredLevel;
-		}
-		
-		public String getName()
-		{
-			return this.name;
-		}
-		
-		public int getPrice()
-		{
-			return this.price;
-		}
-		
-		public String getType()
-		{
-			return this.type;
-		}
-		
-		public int getRequiredLevel()
-		{
-			return this.requiredLevel;
-		}
 	}
-}

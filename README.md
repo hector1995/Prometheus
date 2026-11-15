@@ -52,7 +52,7 @@ There is a grunt, goblin, halfling, siren, troll, scorpion, shapeshifter, giant,
 
 Attributes for each enemy: (are already on the 0-200 scale as they cannot be boosted)
  
-Grunt: | damage: 20 | magic: 20  | defense: 20 | weapon damage: 20 | armor: 20 | intelligence: 20  | speed: 20 | resistance: 30 | strength: 20 |
+Grunt: | damage: 20 | magic: 20  | defense: 20 | weapon damage: 20 | armor: 20 | intelligence: 20  | speed: 20 | resistance: 20 | strength: 20 |
 
 Goblin:  |  damage: 40 | magic: 30  | defense: 50 | weapon damage: 50 | armor: 40 | intelligence: 60  | speed: 40 | resistance: 40 | strength: 40 |
 

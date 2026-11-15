@@ -2,7 +2,7 @@ package character;
 import shopping.Inventory;
 public class Character_Class  {
 	protected int level,exp,health,maxHealth,magic,armor,primary_weapon_damage, secondary_weapon_damage;
-	protected int speed,strength,resistance,money,tournyRounds,MAX_EXP = 100;
+	protected int speed,strength,resistance,money,MAX_EXP = 100;
 	protected String name,speak,primaryWeapon,secondaryWeapon;
 	public Inventory backpack;
 	public Character_Class(){   //These are the defaults stats, just in case I didn't set one up
@@ -16,7 +16,6 @@ public class Character_Class  {
 		resistance = 0;
 		speak = "";
 		money = 200;
-		tournyRounds = 0;
 		backpack = new Inventory();
 		primary_weapon_damage = 10;
 		secondary_weapon_damage = 5;
@@ -64,9 +63,6 @@ public class Character_Class  {
 	public void setSecondaryWeapon(String weap){
 		this.secondaryWeapon = weap;
 	}
-	public void setTournyRounds(int a){
-		this.tournyRounds = a;
-	}
 	public void setArmor(int a){
 		this.armor = a;
 	}
@@ -109,9 +105,6 @@ public class Character_Class  {
 	}
 	public String getSpeak(){
 		return speak;
-	}
-	public int getTournyRounds(){
-		return tournyRounds;
 	}
 	public String getName(){
 		return name;

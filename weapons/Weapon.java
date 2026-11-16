@@ -38,7 +38,7 @@ public class Weapon {
 		return price;
 	}
 
-	public int getRequiredLevel() {3
+	public int getRequiredLevel() {
 		return requiredLevel;
 	}
 
